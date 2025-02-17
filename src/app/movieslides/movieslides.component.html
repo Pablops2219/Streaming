@@ -1,0 +1,25 @@
+<div class="carousel-container">
+  <c-carousel (itemChange)="onItemChange($event)" [interval]="5000" transition="slide" class="c-carousel">
+    <c-carousel-inner>
+      <c-carousel-item *ngFor="let slide of slides">
+        <div class="carousel-item-content" [style.background-image]="'url(' + slide.src + ')'">
+          <div class="item-info">
+            <h2>{{ slide.title }}</h2>
+            <p><strong>Duración:</strong> {{ slide.duration }}</p>
+            <p><strong>Fecha de Publicación:</strong> {{ slide.releaseDate }}</p>
+            <p class="synopsis">{{ slide.synopsis }}</p>
+            <button class="watch-now-button">Ver Ahora</button>
+          </div>
+        </div>
+      </c-carousel-item>
+    </c-carousel-inner>
+
+    <!-- Controles personalizados -->
+    <c-carousel-control [routerLink] direction="prev" class="custom-control prev">
+      <i class="fas fa-chevron-left"></i>
+    </c-carousel-control>
+    <c-carousel-control [routerLink] caption=0 direction="next" class="custom-control next">
+      <i class="fas fa-chevron-right"></i>
+    </c-carousel-control>
+  </c-carousel>
+</div>

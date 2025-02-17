@@ -1,0 +1,124 @@
+/* Estilos generales */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #141414;
+  color: white;
+}
+
+/* Contenedor del header */
+.netflix-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #141414;
+  padding: 10px 20px;
+  position: relative;
+  z-index: 1000;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Logo */
+.netflix-logo img {
+  height: 30px;
+}
+
+/* Navegación principal */
+.netflix-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.netflix-nav ul li a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.netflix-nav ul li a:hover {
+  color: #e50914;
+}
+
+/* Barra de búsqueda */
+.netflix-search {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.search-input {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 3px 0 0 3px;
+  background-color: #333;
+  color: white;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+}
+
+.search-button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 0 3px 3px 0;
+  background-color: #e50914;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #b20710;
+}
+
+/* Opciones de usuario */
+.netflix-user {
+  margin-left: 20px;
+}
+
+.user-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 3px;
+  background-color: #e50914;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.user-button:hover {
+  background-color: #b20710;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .netflix-nav {
+    display: none; /* Ocultar navegación en pantallas pequeñas */
+  }
+
+  .netflix-search {
+    margin-left: 0;
+  }
+
+  .netflix-user {
+    margin-left: 0;
+  }
+}
