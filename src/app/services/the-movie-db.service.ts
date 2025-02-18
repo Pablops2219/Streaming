@@ -79,8 +79,8 @@ export class TheMovieDBService {
           id: movie.id,
           title: movie.title,
           overview: movie.overview,
-          posterUrl: `https://image.tmdb.org/t/p/w500${movie.poster_path}`, // URL del póster de la película
-          backdropUrl: `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`, // URL de la imagen de fondo
+          posterUrl: `https://image.tmdb.org/t/p/original${movie.poster_path}`, // URL del póster de la película
+          backdropUrl: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`, // URL de la imagen de fondo
           releaseDate: movie.release_date,
           voteAverage: movie.vote_average,
           voteCount: movie.vote_count,

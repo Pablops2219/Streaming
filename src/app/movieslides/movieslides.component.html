@@ -1,25 +1,16 @@
-<div class="carousel-container">
-  <c-carousel (itemChange)="onItemChange($event)" [interval]="5000" transition="slide" class="c-carousel">
-    <c-carousel-inner>
-      <c-carousel-item *ngFor="let movie of movies">
-        <div class="carousel-item-content" [style.background-image]="'url(' + movie.backdropUrl + ')'">
-          <div class="item-info">
-            <h2>{{ movie.title }}</h2>
-            <p><strong>Nota media:</strong> {{ movie.voteAverage }}</p>
-            <p><strong>Fecha de Publicación:</strong> {{ movie.releaseDate }}</p>
-            <p class="synopsis">{{ movie.overview }}</p>
-            <button class="watch-now-button">Ver Ahora</button>
-          </div>
-        </div>
-      </c-carousel-item>
-    </c-carousel-inner>
-
-    <!-- Controles personalizados -->
-    <c-carousel-control [routerLink] direction="prev" class="custom-control prev">
-      <i class="fas fa-chevron-left"></i>
-    </c-carousel-control>
-    <c-carousel-control [routerLink] direction="next" class="custom-control next">
-      <i class="fas fa-chevron-right"></i>
-    </c-carousel-control>
-  </c-carousel>
-</div>
+<ngb-carousel >
+  <ng-template ngbSlide *ngFor="let movie of movies; let i = index">
+    <div
+      class="carousel-item-content"
+      [style.background-image]="'url(' + movie.backdropUrl + ')'"
+    >
+      <div class="item-info">
+        <h2>{{ movie.title }}</h2>
+        <p><strong>Nota media:</strong> {{ movie.voteAverage }}</p>
+        <p><strong>Fecha de Publicación:</strong> {{ movie.releaseDate }}</p>
+        <p class="synopsis">{{ movie.overview }}</p>
+        <button class="watch-now-button">Ver Ahora</button>
+      </div>
+    </div>
+  </ng-template>
+</ngb-carousel>

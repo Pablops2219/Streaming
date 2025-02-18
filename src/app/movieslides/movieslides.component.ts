@@ -1,26 +1,29 @@
 import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CarouselComponent, CarouselControlComponent, CarouselIndicatorsComponent, CarouselInnerComponent, CarouselItemComponent, ThemeDirective } from '@coreui/angular';
+import {
+  CarouselComponent,
+  CarouselControlComponent,
+  CarouselIndicatorsComponent,
+  CarouselInnerComponent,
+  CarouselItemComponent,
+  ThemeDirective,
+} from '@coreui/angular';
 import { TheMovieDBService } from '../services/the-movie-db.service';
+import {
+  NgbCarouselConfig,
+  NgbCarouselModule,
+} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-movieslides',
   imports: [
-    ThemeDirective,
-    CarouselComponent,
-    CarouselIndicatorsComponent,
-    CarouselInnerComponent,
     NgFor,
-    CarouselItemComponent,
-    CarouselControlComponent,
-    RouterLink,
-    CarouselComponent,],
+    NgbCarouselModule
+],
   templateUrl: './movieslides.component.html',
-  styleUrl: './movieslides.component.css'
+  styleUrl: './movieslides.component.css',
 })
-
-
 export class MovieslidesComponent {
   movies: any[] = [];
   // id: Número único identificador de la película
@@ -38,36 +41,39 @@ export class MovieslidesComponent {
   // adultContent: Indica si el contenido es para adultos (true/false)
   // videoAvailable: Indica si hay un video disponible (true/false)
 
-
   movie: any;
 
-  constructor(private tmdbService: TheMovieDBService) { }
+  constructor(
+    private tmdbService: TheMovieDBService,
+    config: NgbCarouselConfig
+  ) {
+		config.interval = 7000;
+		config.wrap = false;
+    config.showNavigationArrows = false;
+    config.showNavigationIndicators = false;
+  }
 
   ngOnInit(): void {
-
     this.tmdbService.getAuthentication().subscribe({
       next: (data) => console.log('Datos de la API:', data),
-      error: (err) => console.error('Error en la petición:', err)
+      error: (err) => console.error('Error en la petición:', err),
     });
 
     this.tmdbService.getDiscoverMovies().subscribe({
       next: (data) => {
-        console.log('Películas descubiertas:', data);
+        //console.log('Películas recomendadas:', data);
         this.movies = data; // Asignamos las películas a la variable 'movies'
       },
-      error: (err) => console.error('Error al obtener las películas:', err)
+      error: (err) => console.error('Error al obtener las películas:', err),
     });
-
 
     this.tmdbService.getMovieByID(603).subscribe({
       next: (data) => {
-        console.log('Detalles de la película:', data);
+        //console.log('Detalles de la película:', data);
         this.movie = data;
       },
-      error: (err) => console.error('Error:', err)
+      error: (err) => console.error('Error:', err),
     });
-
-
   }
 
   // Manejar el cambio de slide
