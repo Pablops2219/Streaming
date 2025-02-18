@@ -15,7 +15,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.91) 95%);
+  background: linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(20, 20, 20, 1) 95%);
 }
 
 .item-info {
@@ -61,7 +61,7 @@
   position: relative; /* Necesario para posicionar los controles dentro del carousel */
   overflow: hidden; /* Oculta cualquier contenido que se salga del área */
 }
-
+   
 /* Controles personalizados */
 .custom-control {
   display: flex;

@@ -4,6 +4,7 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { NgFor } from '@angular/common';
 import { MovieslidesComponent } from "./movieslides/movieslides.component";
+import { TheMovieDBService } from './services/the-movie-db.service';
 
 @Component({
   selector: 'app-root',
@@ -13,4 +14,13 @@ import { MovieslidesComponent } from "./movieslides/movieslides.component";
 })
 export class AppComponent {
   title = 'app';
+  constructor(private tmdbService: TheMovieDBService) { }
+
+  // ngOnInit(): void {
+  //   this.tmdbService.getAuthentication().subscribe({
+  //     next: (data) => console.log('Datos de la API:', data),
+  //     error: (err) => console.error('Error en la petición:', err)
+  //   });
+
+  // }
 }

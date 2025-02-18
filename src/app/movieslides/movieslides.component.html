@@ -1,13 +1,13 @@
 <div class="carousel-container">
   <c-carousel (itemChange)="onItemChange($event)" [interval]="5000" transition="slide" class="c-carousel">
     <c-carousel-inner>
-      <c-carousel-item *ngFor="let slide of slides">
-        <div class="carousel-item-content" [style.background-image]="'url(' + slide.src + ')'">
+      <c-carousel-item *ngFor="let movie of movies">
+        <div class="carousel-item-content" [style.background-image]="'url(' + movie.backdropUrl + ')'">
           <div class="item-info">
-            <h2>{{ slide.title }}</h2>
-            <p><strong>Duración:</strong> {{ slide.duration }}</p>
-            <p><strong>Fecha de Publicación:</strong> {{ slide.releaseDate }}</p>
-            <p class="synopsis">{{ slide.synopsis }}</p>
+            <h2>{{ movie.title }}</h2>
+            <p><strong>Nota media:</strong> {{ movie.voteAverage }}</p>
+            <p><strong>Fecha de Publicación:</strong> {{ movie.releaseDate }}</p>
+            <p class="synopsis">{{ movie.overview }}</p>
             <button class="watch-now-button">Ver Ahora</button>
           </div>
         </div>
@@ -18,7 +18,7 @@
     <c-carousel-control [routerLink] direction="prev" class="custom-control prev">
       <i class="fas fa-chevron-left"></i>
     </c-carousel-control>
-    <c-carousel-control [routerLink] caption=0 direction="next" class="custom-control next">
+    <c-carousel-control [routerLink] direction="next" class="custom-control next">
       <i class="fas fa-chevron-right"></i>
     </c-carousel-control>
   </c-carousel>
