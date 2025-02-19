@@ -40,6 +40,12 @@
   font-size: 12px;
   line-height: 1.4;
   margin-bottom: 15px;
+  width: 100%;
+  line-clamp: 3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .watch-now-button {

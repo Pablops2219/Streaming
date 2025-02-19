@@ -59,7 +59,7 @@ export class MovieslidesComponent {
       error: (err) => console.error('Error en la petición:', err),
     });
 
-    this.tmdbService.getDiscoverMovies().subscribe({
+    this.tmdbService.getTrendingMovies().subscribe({
       next: (data) => {
         //console.log('Películas recomendadas:', data);
         this.movies = data; // Asignamos las películas a la variable 'movies'
@@ -67,13 +67,7 @@ export class MovieslidesComponent {
       error: (err) => console.error('Error al obtener las películas:', err),
     });
 
-    this.tmdbService.getMovieByID(603).subscribe({
-      next: (data) => {
-        //console.log('Detalles de la película:', data);
-        this.movie = data;
-      },
-      error: (err) => console.error('Error:', err),
-    });
+    
   }
 
   // Manejar el cambio de slide

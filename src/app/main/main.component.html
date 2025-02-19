@@ -1,0 +1,26 @@
+<div class="container my-4">
+  <h2 class="text-center mb-4 text-light">Lista de Películas</h2>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col" *ngFor="let movie of movies; let i = index" >
+      <div class="card h-100 shadow-lg bg-dark text-light position-relative border-0" >
+        <!-- Imagen del póster con efecto de superposición -->
+        <div class="position-relative">
+          <img 
+            [src]="movie.posterUrl" 
+            class="card-img-top rounded" 
+            alt="{{ movie.title }}" 
+            loading="lazy"
+          >
+          <span class="badge bg-primary position-absolute bottom-0 end-0 m-2 px-3 py-1">
+            {{ movie.releaseDate }}
+          </span>
+        </div>
+        <!-- Contenido principal de la carta (transparente) -->
+        <div class="card-body p-2 text-center my-3" >
+          <h5 class="card-title fw-bold m-0 text-start">{{ movie.title }}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

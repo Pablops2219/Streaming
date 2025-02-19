@@ -1,0 +1,41 @@
+.card {
+  border: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  /* box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); */
+}
+
+.card-img-top {
+  object-fit: cover; /* Asegura que las imágenes se ajusten correctamente */
+}
+
+.synopsis {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.card-body{
+    background: transparent;
+}
+
+.card-footer {
+  background-color: #f8f9fa;
+  border-top: none;
+}
+
+.btn-primary {
+  background-color: #e50914;
+  border-color: #e50914;
+}
+
+.btn-primary:hover {
+  background-color: #b20710;
+  border-color: #b20710;
+}
+
+.card{
+  background-color: rgba(0, 0, 0, 0) !important;
+}

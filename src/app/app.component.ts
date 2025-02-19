@@ -5,10 +5,11 @@ import { FooterComponent } from './footer/footer.component';
 import { NgFor } from '@angular/common';
 import { MovieslidesComponent } from "./movieslides/movieslides.component";
 import { TheMovieDBService } from './services/the-movie-db.service';
+import { MainComponent } from './main/main.component';
 
 @Component({
   selector: 'app-root',
-  imports: [FooterComponent, HeaderComponent, RouterOutlet, MovieslidesComponent],
+  imports: [FooterComponent, HeaderComponent, RouterOutlet, MovieslidesComponent, MainComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

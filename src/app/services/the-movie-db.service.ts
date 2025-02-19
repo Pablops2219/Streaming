@@ -48,7 +48,7 @@ export class TheMovieDBService {
       accept: 'application/json',
       Authorization: `Bearer ${this.BEARER_TOKEN}`
     });
-    return this.http.get<T>(`${this.API_URL}/${endpoint}`, { headers });
+    return this.http.get<T>(`${this.API_URL}/${endpoint}?language=es-ES`, { headers });
   }
 
   /**
@@ -72,25 +72,27 @@ export class TheMovieDBService {
    * Obtiene películas descubiertas (discover).
    * @returns Observable con la lista de películas descubiertas
    */
-  getDiscoverMovies(): Observable<Movie[]> {
-    return this.get<ApiResponse>('discover/movie?include_adult=false&include_video=false&language=es-ES&page=1&sort_by=popularity.desc').pipe(
+  //https://api.themoviedb.org/3
+  getTrendingMovies(): Observable<Movie[]> {
+    return this.get<ApiResponse>('/trending/movie/day?language=es-ES').pipe(
       map((response: ApiResponse) => {
-        return response.results.map((movie: any) => ({
-          id: movie.id,
-          title: movie.title,
-          overview: movie.overview,
-          posterUrl: `https://image.tmdb.org/t/p/original${movie.poster_path}`, // URL del póster de la película
-          backdropUrl: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`, // URL de la imagen de fondo
-          releaseDate: movie.release_date,
-          voteAverage: movie.vote_average,
-          voteCount: movie.vote_count,
-          popularity: movie.popularity,
-          genreIds: movie.genre_ids,
-          originalLanguage: movie.original_language,
-          originalTitle: movie.original_title,
-          adultContent: movie.adult,
-          videoAvailable: movie.video
-        }));
+          return response.results.map((movie: any) => ({
+            id: movie.id,
+            title: movie.title,
+            overview: movie.overview,
+            posterUrl: `https://image.tmdb.org/t/p/original${movie.poster_path}`, // URL del póster de la película
+            backdropUrl: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`, // URL de la imagen de fondo
+            releaseDate: movie.release_date,
+            voteAverage: movie.vote_average,
+            voteCount: movie.vote_count,
+            popularity: movie.popularity,
+            genreIds: movie.genre_ids,
+            originalLanguage: movie.original_language,
+            originalTitle: movie.original_title,
+            adultContent: movie.adult,
+            videoAvailable: movie.video
+          }));
+        
       })
     );
   }
