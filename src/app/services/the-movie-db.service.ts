@@ -44,16 +44,19 @@ export class TheMovieDBService {
    * @param endpoint Endpoint de la API
    * @returns Observable con la respuesta de la API
    */
-  private get<T>(endpoint: string): Observable<T> {
+  private get<T>(endpoint: string, language?: string): Observable<T> {
     const headers = new HttpHeaders({
       accept: 'application/json',
       Authorization: `Bearer ${this.BEARER_TOKEN}`,
     });
-    return this.http.get<T>(`${this.API_URL}/${endpoint}?language=es-ES`, {
-      headers,
-    });
-  }
 
+    // Construir la URL con el parámetro de idioma si está definido
+    const url = `${this.API_URL}/${endpoint}${
+      language ? `?language=${language}` : ''
+    }`;
+
+    return this.http.get<T>(url, { headers });
+  }
   /**
    * Obtiene información de autenticación de la API.
    * @returns Observable con la respuesta de autenticación
@@ -76,8 +79,8 @@ export class TheMovieDBService {
    * @returns Observable con la lista de películas descubiertas
    */
   //https://api.themoviedb.org/3
-  getTrendingMovies(): Observable<Movie[]> {
-    return this.get<ApiResponse>('/trending/movie/day?language=es-ES').pipe(
+  getTrendingMovies(type: 'day' | 'week', page: number = 1): Observable<Movie[]> {
+    return this.get<ApiResponse>(`/trending/movie/${type}?language=es-ES&page=${page}`).pipe(
       map((response: ApiResponse) => {
         return response.results.map((movie: any) => ({
           id: movie.id,
@@ -98,7 +101,8 @@ export class TheMovieDBService {
         }));
       })
     );
-  }
+}
+
 
   /**
    * Filtra películas por datos faltantes.
@@ -136,8 +140,8 @@ export class TheMovieDBService {
     });
   }
 
-  getTrendingSeries(): Observable<Movie[]> {
-    return this.get<ApiResponse>('/trending/tv/day?language=es-ES').pipe(
+  getTrendingSeries(type: 'day' | 'week', page: number = 1): Observable<Movie[]> {
+    return this.get<ApiResponse>(`/trending/tv/${type}?language=es-ES&page=${page}`).pipe(
       map((response: ApiResponse) => {
         return response.results.map((series: any) => ({
           id: series.id,
@@ -166,42 +170,80 @@ export class TheMovieDBService {
    * @param index Índice del video a obtener (opcional)
    * @returns Observable con la información
    */
-  getVideoByMovieId(movieId: number, index: number = 0): Observable<Map<string, any>> {
-    //console.log("https://api.themoviedb.org/3/tv/${movieId}/videos");
-    return this.get<any>(`movie/${movieId}/videos`).pipe(
-      map((data) => this.extractVideo(data, index)),
-      catchError(() => of(this.videoNotFound()))
+  getVideoByMovieId(
+    movieId: number,
+    index: number = 0
+  ): Observable<Map<string, any>> {
+    return this.get<any>(`movie/${movieId}/videos`, 'es').pipe(
+      map((data) => {
+        if (!data || !data.results || data.results.length === 0) {
+          throw new Error('No videos found');
+        }
+        return this.extractVideo(data, index);
+      }),
+      catchError(() =>
+        this.get<any>(`movie/${movieId}/videos`).pipe(
+          map((data) => {
+            if (!data || !data.results || data.results.length === 0) {
+              throw new Error('No videos found');
+            }
+            return this.extractVideo(data, index);
+          }),
+          catchError(() => of(this.videoNotFound()))
+        )
+      )
     );
   }
-  
-  getVideoBySerieId(serieId: number, index: number = 0): Observable<Map<string, any>> {
-    //console.log("https://api.themoviedb.org/3/tv/${serieId}/videos");
-    return this.get<any>(`tv/${serieId}/videos`).pipe(
-      map((data) => this.extractVideo(data, index)),
-      catchError(() => of(this.videoNotFound()))
+
+  getVideoBySerieId(
+    serieId: number,
+    index: number = 0
+  ): Observable<Map<string, any>> {
+    return this.get<any>(`tv/${serieId}/videos`, 'es').pipe(
+      map((data) => {
+        if (!data || !data.results || data.results.length === 0) {
+          throw new Error('No videos found');
+        }
+        return this.extractVideo(data, index);
+      }),
+      catchError(() =>
+        this.get<any>(`tv/${serieId}/videos`).pipe(
+          map((data) => {
+            if (!data || !data.results || data.results.length === 0) {
+              throw new Error('No videos found');
+            }
+            return this.extractVideo(data, index);
+          }),
+          catchError(() => of(this.videoNotFound()))
+        )
+      )
     );
   }
 
   private extractVideo(data: any, index: number): Map<string, any> {
     //console.log(data);
     const videoMap = new Map<string, any>();
-  
+
     if (!data?.results?.length) return this.videoNotFound();
-  
+
     const videos = data.results.map((video: any) => ({
       ...video,
       url: `https://www.youtube.com/embed/${video.key}`,
     }));
-    const selectedVideo = videos.find((v: { type: string; }) => v.type === "Trailer") || videos[index];
-  
-    videoMap.set("video", selectedVideo || this.videoNotFound().get("404"));
+    const selectedVideo =
+      videos.find((v: { type: string }) => v.type === 'Trailer') ||
+      videos[index];
+
+    videoMap.set('video', selectedVideo || this.videoNotFound().get('404'));
     return videoMap;
   }
-  
+
   private videoNotFound(): Map<string, any> {
-    return new Map([["404", { name: 'Video no encontrado', url: 'https://www.youtube.com/404' }]]);
+    return new Map([
+      [
+        '404',
+        { name: 'Video no encontrado', url: 'https://www.youtube.com/404' },
+      ],
+    ]);
   }
-  
-  
-  
 }

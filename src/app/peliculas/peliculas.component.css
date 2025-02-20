@@ -11,18 +11,17 @@
 .card-img-top {
   object-fit: cover;
   height: 444px;
-  
 }
 
-.main-container{
+.main-container {
   margin: 1rem;
 }
 
-.col{
+.col {
   padding: 10px;
 }
 
-ngb-rating{
+ngb-rating {
   color: rgb(255, 197, 7);
 }
 
@@ -40,11 +39,10 @@ ngb-rating{
   background: transparent;
 }
 
-.card-body-2{
+.card-body-2 {
   display: flex;
   flex-flow: column nowrap;
   gap: 1rem;
-
 }
 
 .card-footer {
@@ -64,32 +62,7 @@ ngb-rating{
 .card {
   background-color: rgba(0, 0, 0, 0) !important;
 }
-
-.d-flex{
-  margin: 2rem 0;
-  scrollbar-width: thin;
-  scrollbar-color: red rgba(255, 0, 0, 0.226);
-}
-/* Estilos para el scroll horizontal */
-.d-flex::-webkit-scrollbar {
-  height: 8px;
-}
-
-.d-flex::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
-}
-
-.d-flex::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px;
-}
-
-.d-flex::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-.user-controls{
+.user-controls {
   display: flex;
   justify-content: center;
   margin: 0;

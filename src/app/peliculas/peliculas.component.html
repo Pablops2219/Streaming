@@ -1,0 +1,33 @@
+<div class="main-container">
+    <h2 class="text-center mb-4 text-light">Peliculas Populares</h2>
+    <div class="row g-5"> 
+      <div class="col-6 col-md-4 col-lg-3" *ngFor="let movie of movies">
+        <div class="card h-100 bg-dark text-light position-relative border-0" style="max-width: 300px;">
+          <div class="position-relative">
+            <img [src]="movie.posterUrl" class="card-img-top rounded" alt="{{ movie.title }}" loading="lazy" />
+            <span class="badge bg-primary position-absolute bottom-0 end-0 m-2 px-3 py-1">
+              {{ movie.releaseDate }}
+            </span>
+          </div>
+          <div class="card-body p-2 text-center">
+            <div class="card-body-2">
+              <h5 class="card-title fw-bold m-0 text-start">{{ movie.title }}</h5>
+              <button class="watch-now-button">Ver Ahora</button>
+            </div>
+            <div class="m-0 text-end">
+              <div class="user-controls d-flex gap-3 align-items-center">
+                <i class="bi bi-clock" [ngClass]="{ 'text-primary': isInWatchlist(movie.id), 'text-secondary': !isInWatchlist(movie.id) }"
+                (click)="toggleWatchList(movie.id, isInWatchlist(movie.id))"></i>
+                <i class="bi bi-heart" [ngClass]="{ 'bi-heart-fill text-danger': isFavorite(movie.id), 'bi-heart text-secondary': !isFavorite(movie.id) }"
+                (click)="toggleFavorite(movie.id, isFavorite(movie.id))"></i>
+              </div>
+              <ngb-rating [(rate)]="movie.stars"></ngb-rating>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <button class="btn btn-outline-primary" (click)="loadMoreMovies()">Cargar Más Películas</button>
+    </div>
+</div>

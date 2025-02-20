@@ -60,7 +60,7 @@ export class MovieslidesComponent {
     });
 
 
-    this.tmdbService.getTrendingMovies().subscribe({
+    this.tmdbService.getTrendingMovies('day').subscribe({
       next: (data) => {
         //console.log('Películas recomendadas:', data);
     

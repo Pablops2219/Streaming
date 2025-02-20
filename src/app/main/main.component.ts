@@ -4,10 +4,11 @@ import { NgClass, NgFor, NgIf } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NgbRatingConfig, NgbRatingModule } from '@ng-bootstrap/ng-bootstrap';
 import { TmdbAuthService } from '../services/tmdb-auth.service';
+import { MovieslidesComponent } from "../movieslides/movieslides.component";
 
 @Component({
   selector: 'app-main',
-  imports: [NgFor, NgbRatingModule, NgIf, NgClass],
+  imports: [NgFor, NgbRatingModule, NgIf, NgClass, MovieslidesComponent],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css',
   providers: [NgbRatingConfig],
@@ -56,7 +57,7 @@ export class MainComponent {
   
 
   private loadTrendingMovies(): void {
-    this.tmdbService.getTrendingMovies().subscribe({
+    this.tmdbService.getTrendingMovies('week').subscribe({
       next: (data) => {
         this.tmdbService.filterMoviesByMissingData('title', data).subscribe({
           next: (filteredData) => this.movies = filteredData,
@@ -68,7 +69,7 @@ export class MainComponent {
   }
 
   private loadTrendingSeries(): void {
-    this.tmdbService.getTrendingSeries().subscribe({
+    this.tmdbService.getTrendingSeries('week').subscribe({
       next: (data) => this.series = data,
       error: (err) => console.error('Error al obtener series:', err),
     });
@@ -86,7 +87,8 @@ export class MainComponent {
       this.clearSelection();
     } else {
       this.selectedMovie = item;
-      this.showVideo = true;
+      this.showVideo = true;+
+      console.log("Item:", item);
       isMovie ? this.loadMovieVideo(item.id) : this.loadSerieVideo(item.id);
     }
   }
@@ -154,5 +156,12 @@ export class MainComponent {
     this.tmdbAuthService.getFavoriteTVShows().subscribe(data => this.favoriteSeries = new Set(data.results.map((series: { id: any; }) => series.id)));
     this.tmdbAuthService.getWatchlistMovies().subscribe(data => this.watchlistMovies = new Set(data.results.map((movie: { id: any; }) => movie.id)));
     this.tmdbAuthService.getWatchlistTVShows().subscribe(data => this.watchlistSeries = new Set(data.results.map((series: { id: any; }) => series.id)));
+  }
+  goToSeries(movieId: number): void {
+    
+  }
+
+  goToMovie(movieId: number): void {
+
   }
 }

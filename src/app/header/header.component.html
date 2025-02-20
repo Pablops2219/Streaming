@@ -1,37 +1,40 @@
-<header class="netflix-header">
+<header class="netflix-header navbar navbar-expand-lg navbar-dark">
     <div class="container">
         <!-- Logo -->
-        <a href="#" class="netflix-logo">
-            <img src="https://www.netflix.com/static/images/nficon.png" alt="Netflix">
+        <a class="navbar-brand netflix-logo">
+            <img  src="https://seeklogo.com/images/C/cooper-s-logo-2DBBAC3330-seeklogo.com.png" alt="Skibidiflix">
         </a>
 
+        <!-- Botón para menú en dispositivos móviles -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
         <!-- Navegación principal -->
-        <nav class="netflix-nav">
-            <ul>
-                <li><a href="#">Inicio</a></li>
-                <li><a href="#">Series</a></li>
-                <li><a href="#">Películas</a></li>
-                <li><a href="#">Categorías</a></li>
-                <li><a href="#">Mi lista</a></li>
+        <div class=" collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav netflix-nav">
+                <li class="nav-item"><a class="nav-link" [routerLink]="['main']">Inicio</a></li>
+                
+                <li class="nav-item"><a class="nav-link" [routerLink]="['peliculas']">Películas</a></li>
+
+                <li class="nav-item"><a class="nav-link" [routerLink]="['series']">Series</a></li>
+                  
             </ul>
-        </nav>
 
-        <!-- Barra de búsqueda -->
-        <div class="netflix-search">
-            <input type="text" placeholder="Buscar títulos..." class="search-input">
-            <button class="search-button"><i class="fas fa-search"></i></button>
-        </div>
+            <!-- Barra de búsqueda -->
+            <form class="netflix-search d-flex">
+                <input type="text" class="form-control search-input" placeholder="Buscar títulos...">
+                <button class="search-button"><i class="fas fa-search"></i></button>
+            </form>
 
-        <!-- Opciones de usuario -->
-        <div class="netflix-user d-flex align-items-center">
-            <button *ngIf="!isAuthenticated" class="user-button btn btn-primary" (click)="loginWithTMDB()">INICIAR
-                SESIÓN</button>
-            <!-- Icono de perfil si está autenticado -->
-            <div class="user-profile d-flex align-items-center ms-3 " [routerLink]="['/footer']">
-                <i class="bi bi-person-circle" style="font-size: 40px;"></i> <!-- Icono de perfil -->
-                <span class="">Usuario</span> <!-- Opcional: Mostrar nombre de usuario -->
+            <!-- Opciones de usuario -->
+            <div class="netflix-user d-flex align-items-center">
+                <button *ngIf="!isAuthenticated" class="user-button" (click)="loginWithTMDB()">INICIAR SESIÓN</button>
+                <div *ngIf="isAuthenticated" class="user-profile d-flex">
+                    <i class="bi bi-person-circle"></i>
+                    <span>Invitado</span>
+                </div>
             </div>
         </div>
-
     </div>
 </header>

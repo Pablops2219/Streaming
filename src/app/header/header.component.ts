@@ -2,12 +2,14 @@ import { Component } from '@angular/core';
 import { TmdbAuthService } from '../services/tmdb-auth.service';
 import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
 import { FooterComponent } from '@coreui/angular';
+import { CommonModule, NgIf } from '@angular/common';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  imports: [RouterLink, RouterModule, FooterComponent],
+  imports: [RouterLink, RouterModule, NgIf,CommonModule, NgbDropdownModule],
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
