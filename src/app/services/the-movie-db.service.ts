@@ -166,73 +166,42 @@ export class TheMovieDBService {
    * @param index Índice del video a obtener (opcional)
    * @returns Observable con la información
    */
-  getVideoByMovieId(movieId: number, index?: number): Observable<Map<string, any>> {
+  getVideoByMovieId(movieId: number, index: number = 0): Observable<Map<string, any>> {
+    //console.log("https://api.themoviedb.org/3/tv/${movieId}/videos");
     return this.get<any>(`movie/${movieId}/videos`).pipe(
-      map((data) => {
-        //console.log('Respuesta completa de la API:', data);
-        const videoMap = new Map<string, any>();
-  
-        // Si no hay resultados, devolver un mapa con la clave "404"
-        if (!data || !Array.isArray(data.results) || data.results.length === 0) {
-          console.warn('No se encontraron videos para esta película.');
-          videoMap.set("404", {
-            name: 'Video no encontrado',
-            url: 'https://www.youtube.com/404'
-          });
-          return videoMap;
-        }
-  
-        const videosWithUrl = data.results.map((video: any) => ({
-          ...video,
-          url: `https://www.youtube.com/embed/${video.key}`,
-        }));
-  
-        //console.log('Videos transformados:', videosWithUrl);
-  
-        // Si no hay índice, buscar el primer video de tipo "Trailer"
-        if (index === undefined) {
-          const trailer = videosWithUrl.find((video: { type: string }) => video.type === "Trailer");
-          if (trailer) {
-            console.log('Devolviendo primer trailer:', trailer);
-            videoMap.set("video", trailer);
-            return videoMap;
-          } else {
-            console.warn('No se encontraron trailers.');
-            videoMap.set("404", {
-              name: 'Video no encontrado',
-              url: 'https://www.youtube.com/404'
-            });
-            return videoMap;
-          }
-        }
-  
-        // Convertir index a número (por si viene como string)
-        index = Number(index);
-  
-        if (isNaN(index) || index < 0 || index >= videosWithUrl.length) {
-          console.error(`Índice fuera de rango: index=${index}, length=${videosWithUrl.length}`);
-          videoMap.set("404", {
-            name: 'Video no encontrado',
-            url: 'https://www.youtube.com/404'
-          });
-          return videoMap;
-        }
-  
-        console.log(`Devolviendo el video en la posición ${index}:`, videosWithUrl[index]);
-        videoMap.set("video", videosWithUrl[index]);
-        return videoMap;
-      }),
-      catchError((err) => {
-        console.error('Error al obtener el video:', err);
-        const errorMap = new Map<string, any>();
-        errorMap.set("404", {
-          name: 'Error al cargar el video',
-          url: 'https://www.youtube.com/404'
-        });
-        return of(errorMap); // 🔥 Asegura que siempre devuelve un Observable válido
-      })
+      map((data) => this.extractVideo(data, index)),
+      catchError(() => of(this.videoNotFound()))
     );
   }
+  
+  getVideoBySerieId(serieId: number, index: number = 0): Observable<Map<string, any>> {
+    //console.log("https://api.themoviedb.org/3/tv/${serieId}/videos");
+    return this.get<any>(`tv/${serieId}/videos`).pipe(
+      map((data) => this.extractVideo(data, index)),
+      catchError(() => of(this.videoNotFound()))
+    );
+  }
+
+  private extractVideo(data: any, index: number): Map<string, any> {
+    //console.log(data);
+    const videoMap = new Map<string, any>();
+  
+    if (!data?.results?.length) return this.videoNotFound();
+  
+    const videos = data.results.map((video: any) => ({
+      ...video,
+      url: `https://www.youtube.com/embed/${video.key}`,
+    }));
+    const selectedVideo = videos.find((v: { type: string; }) => v.type === "Trailer") || videos[index];
+  
+    videoMap.set("video", selectedVideo || this.videoNotFound().get("404"));
+    return videoMap;
+  }
+  
+  private videoNotFound(): Map<string, any> {
+    return new Map([["404", { name: 'Video no encontrado', url: 'https://www.youtube.com/404' }]]);
+  }
+  
   
   
 }

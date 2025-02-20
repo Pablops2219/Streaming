@@ -1,27 +1,43 @@
 import { Component } from '@angular/core';
+import { TmdbAuthService } from '../services/tmdb-auth.service';
+import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
+import { FooterComponent } from '@coreui/angular';
+
 
 @Component({
   selector: 'app-header',
-  imports: [],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  imports: [RouterLink, RouterModule, FooterComponent],
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  searchQuery = ''; // Variable para almacenar la consulta de búsqueda
 
-  // Método para manejar la búsqueda
-  onSearch() {
-    if (this.searchQuery.trim()) {
-      console.log('Búsqueda:', this.searchQuery);
-      // Aquí puedes redirigir a una página de resultados o realizar una petición HTTP
-    } else {
-      alert('Por favor, ingresa un término de búsqueda.');
+  isAuthenticated: boolean = !!localStorage.getItem('tmdb_session_id');
+
+
+  constructor(
+    private tmdbAuthService: TmdbAuthService,
+    private route: ActivatedRoute
+  ) { }
+
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params['request_token']) {
+        this.tmdbAuthService.handleAuthCallback(params['request_token'])
+        this.isAuthenticated = true; // Actualizar autenticación después del login
+
+      }
+    });
+
+    const sessionId = localStorage.getItem('tmdb_session_id');
+    if (sessionId) {
+      
+      this.isAuthenticated = true;
     }
+
   }
 
-  // Método para manejar el inicio de sesión
-  onLogin() {
-    console.log('Iniciar sesión');
-    // Aquí puedes abrir un modal o redirigir a una página de inicio de sesión
+  loginWithTMDB() {
+    this.tmdbAuthService.authenticateUser();
   }
 }

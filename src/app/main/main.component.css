@@ -36,7 +36,7 @@ ngb-rating{
   flex-flow: row nowrap;
   gap: 1rem;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
   background: transparent;
 }
 
@@ -82,3 +82,9 @@ ngb-rating{
   background: #555;
 }
 
+.user-controls{
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}

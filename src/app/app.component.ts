@@ -17,11 +17,11 @@ export class AppComponent {
   title = 'app';
   constructor(private tmdbService: TheMovieDBService) { }
 
-  // ngOnInit(): void {
-  //   this.tmdbService.getAuthentication().subscribe({
-  //     next: (data) => console.log('Datos de la API:', data),
-  //     error: (err) => console.error('Error en la petición:', err)
-  //   });
+  ngOnInit(): void {
+    this.tmdbService.getAuthentication().subscribe({
+      next: (data) => console.log('Datos de la API:', data),
+      error: (err) => console.error('Error en la petición:', err)
+    });
 
-  // }
+  }
 }

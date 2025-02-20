@@ -1,49 +1,42 @@
+
 <!-- <iframe width="100%" height="100%" frameBorder="0" [src]="urlSafe"></iframe> -->
 <div class="main-container">
   <h2 class="text-center mb-4 text-light">Películas Populares</h2>
-  <!-- Contenedor con scroll horizontal -->
   <div class="d-flex flex-nowrap overflow-auto">
-    <div class="col" *ngFor="let movie of movies; let i = index">
-      <div
-        class="card h-100 bg-dark text-light position-relative border-0"
+    <div class="col" *ngFor="let movie of movies">
+      <div class="card h-100 bg-dark text-light position-relative border-0"
         [style.width]="selectedMovie === movie ? '50rem' : '18rem'"
-        [ngClass]="{ 'no-hover': showVideo && selectedMovie === movie }"
-        (click)="viewDetails(movie)"
-      >
-        <!-- Contenedor para la imagen o el video -->
+        [ngClass]="{ 'no-hover': showVideo && selectedMovie === movie }">
         <div class="position-relative">
-          <!-- Mostrar la imagen si no se está mostrando el video -->
-          <img
-            *ngIf="!showVideo || selectedMovie !== movie"
-            [src]="movie.posterUrl"
-            class="card-img-top rounded"
-            alt="{{ movie.title }}"
-            loading="lazy"
-          />
-    
-          <!-- Mostrar el video si la película está seleccionada y showVideo es true -->
-          <iframe
-            *ngIf="showVideo && selectedMovie === movie && safeVideoUrl"
-            width="100%"
-            height="315"
-            [src]="safeVideoUrl"
-            frameborder="0"
+          <img *ngIf="!showVideo || selectedMovie !== movie" [src]="movie.posterUrl" class="card-img-top rounded"
+            alt="{{ movie.title }}" loading="lazy" (click)="viewDetails(movie, true)" />
+          <iframe *ngIf="showVideo && selectedMovie === movie && safeVideoUrl" width="100%" height="315"
+            [src]="safeVideoUrl" frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-            class="card-img-top rounded"
-          ></iframe>
-    
-          <!-- Badge con la fecha de estreno -->
-          <span class="badge bg-primary position-absolute bottom-0 end-0 m-2 px-3 py-1">
+            allowfullscreen class="card-img-top rounded"></iframe>
+          <button class="badge bg-danger position-absolute bottom-1 end-0 m-2 px-3 py-1"
+            *ngIf="showVideo && selectedMovie === movie && safeVideoUrl" (click)="clearSelection()">
+            X
+          </button>
+          <span class="badge bg-primary position-absolute bottom-0 end-0 m-2 px-3 py-1"
+            *ngIf="!showVideo || selectedMovie !== movie">
             {{ movie.releaseDate }}
           </span>
         </div>
-    
-        <!-- Contenido de la tarjeta -->
         <div class="card-body p-2 text-center my-3">
           <h5 class="card-title fw-bold m-0 text-start">{{ movie.title }}</h5>
           <div class="m-0 text-end">
-            <ngb-rating [(rate)]="movie.stars" />
+            <div class="user-controls d-flex gap-3 align-items-center">
+              <i class="bi bi-clock"
+                [ngClass]="{ 'text-primary': isInWatchlist(movie.id, 'movie'), 'text-secondary': !isInWatchlist(movie.id, 'movie') }"
+                (click)="toggleWatchList(movie.id, 'movie', isInWatchlist(movie.id, 'movie'))">
+              </i>
+              <i class="bi bi-heart"
+                [ngClass]="{ 'bi-heart-fill text-danger': isFavorite(movie.id, 'movie'), 'bi-heart text-secondary': !isFavorite(movie.id, 'movie') }"
+                (click)="toggleFavorite(movie.id, 'movie', isFavorite(movie.id, 'movie'))">
+              </i>
+            </div>
+            <ngb-rating [(rate)]="movie.stars"></ngb-rating>
           </div>
         </div>
       </div>
@@ -51,32 +44,41 @@
   </div>
 
   <h2 class="text-center mb-4 text-light">Series Populares</h2>
-  <!-- Contenedor con scroll horizontal -->
   <div class="d-flex flex-nowrap overflow-auto">
-    <div class="col" *ngFor="let serie of series; let i = index">
-      <div
-        class="card h-100 bg-dark text-light position-relative border-0"
-        style="width: 18rem"
-      >
-        <!-- Imagen del póster con efecto de superposición -->
+    <div class="col" *ngFor="let serie of series">
+      <div class="card h-100 bg-dark text-light position-relative border-0"
+        [style.width]="selectedMovie === serie ? '50rem' : '18rem'"
+        [ngClass]="{ 'no-hover': showVideo && selectedMovie === serie }">
         <div class="position-relative">
-          <img
-            [src]="serie.posterUrl"
-            class="card-img-top rounded"
-            alt="{{ serie.title }}"
-            loading="lazy"
-          />
-          <span
-            class="badge bg-primary position-absolute bottom-0 end-0 m-2 px-3 py-1"
-          >
+          <img *ngIf="!showVideo || selectedMovie !== serie" [src]="serie.posterUrl" class="card-img-top rounded"
+            alt="{{ serie.title }}" loading="lazy" (click)="viewDetails(serie, false)" />
+          <iframe *ngIf="showVideo && selectedMovie === serie && safeVideoUrl" width="100%" height="315"
+            [src]="safeVideoUrl" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen class="card-img-top rounded"></iframe>
+          <button class="badge bg-danger position-absolute bottom-1 end-0 m-2 px-3 py-1"
+            *ngIf="showVideo && selectedMovie === serie && safeVideoUrl" (click)="clearSelection()">
+            X
+          </button>
+          <span class="badge bg-primary position-absolute bottom-0 end-0 m-2 px-3 py-1"
+            *ngIf="!showVideo || selectedMovie !== serie">
             {{ serie.releaseDate }}
           </span>
         </div>
-        <!-- Contenido principal de la carta (transparente) -->
         <div class="card-body p-2 text-center my-3">
           <h5 class="card-title fw-bold m-0 text-start">{{ serie.title }}</h5>
           <div class="m-0 text-end">
-            <ngb-rating [(rate)]="serie.stars" />
+            <div class="user-controls d-flex gap-3 align-items-center">
+              <i class="bi bi-clock"
+                [ngClass]="{ 'text-primary': isInWatchlist(serie.id, 'tv'), 'text-secondary': !isInWatchlist(serie.id, 'tv') }"
+                (click)="toggleWatchList(serie.id, 'tv', isInWatchlist(serie.id, 'tv'))">
+              </i>
+              <i class="bi bi-heart"
+                [ngClass]="{ 'bi-heart-fill text-danger': isFavorite(serie.id, 'tv'), 'bi-heart text-secondary': !isFavorite(serie.id, 'tv') }"
+                (click)="toggleFavorite(serie.id, 'tv', isFavorite(serie.id, 'tv'))">
+              </i>
+            </div>
+            <ngb-rating [(rate)]="serie.stars"></ngb-rating>
           </div>
         </div>
       </div>

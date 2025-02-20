@@ -122,3 +122,13 @@ body {
     margin-left: 0;
   }
 }
+
+.user-profile{
+  flex-flow:column;
+  justify-content: center;
+  align-items: center;
+}
+
+.bi-person-circle{
+  height: 50px;
+}
