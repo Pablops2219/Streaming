@@ -1,6 +1,6 @@
 .card {
   border: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease, all 0.3s ease;
 }
 
 .card:hover {
@@ -9,7 +9,21 @@
 }
 
 .card-img-top {
-  object-fit: cover; /* Asegura que las imágenes se ajusten correctamente */
+  object-fit: cover;
+  height: 444px;
+  
+}
+
+.main-container{
+  margin: 1rem;
+}
+
+.col{
+  padding: 10px;
+}
+
+ngb-rating{
+  color: rgb(255, 197, 7);
 }
 
 .synopsis {
@@ -17,12 +31,16 @@
   line-height: 1.4;
 }
 
-.card-body{
-    background: transparent;
+.card-body {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
 }
 
 .card-footer {
-  background-color: #f8f9fa;
   border-top: none;
 }
 
@@ -36,6 +54,31 @@
   border-color: #b20710;
 }
 
-.card{
+.card {
   background-color: rgba(0, 0, 0, 0) !important;
 }
+
+.d-flex{
+  margin: 2rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: red rgba(255, 0, 0, 0.226);
+}
+/* Estilos para el scroll horizontal */
+.d-flex::-webkit-scrollbar {
+  height: 8px;
+}
+
+.d-flex::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.d-flex::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.d-flex::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+

@@ -55,14 +55,23 @@ export class MovieslidesComponent {
 
   ngOnInit(): void {
     this.tmdbService.getAuthentication().subscribe({
-      next: (data) => console.log('Datos de la API:', data),
+      //next: (data) => console.log('Datos de la API:', data),
       error: (err) => console.error('Error en la petición:', err),
     });
+
 
     this.tmdbService.getTrendingMovies().subscribe({
       next: (data) => {
         //console.log('Películas recomendadas:', data);
-        this.movies = data; // Asignamos las películas a la variable 'movies'
+    
+        // Filtrar las películas usando el servicio
+        this.tmdbService.filterMoviesByMissingData('both', data).subscribe({
+          next: (filteredData) => {
+            //console.log('Películas recomendadas y filtradas:', filteredData);
+            this.movies = filteredData; // Asignar las películas filtradas
+          },
+          error: (err) => console.error('Error al filtrar las películas:', err),
+        });
       },
       error: (err) => console.error('Error al obtener las películas:', err),
     });
