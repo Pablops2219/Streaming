@@ -1,0 +1,110 @@
+.card {
+    border: none;
+    transition: all 0.3s ease, all 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-10px);
+    /* box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); */
+  }
+  
+  .card-img-top {
+    object-fit: cover;
+    height: 444px;
+  }
+  
+  .main-container {
+    margin: 1rem;
+  }
+  
+  .col {
+    padding: 10px;
+  }
+  
+  ngb-rating {
+    color: rgb(255, 197, 7);
+  }
+  
+  .synopsis {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  .card-body {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: start;
+    background: transparent;
+  }
+  
+  .card-body-2 {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 1rem;
+  }
+  
+  .card-footer {
+    border-top: none;
+  }
+  
+  .btn-primary {
+    background-color: #e50914;
+    border-color: #e50914;
+  }
+  
+  .btn-primary:hover {
+    background-color: #b20710;
+    border-color: #b20710;
+  }
+  
+.d-flex{
+    margin: 2rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: red rgba(255, 0, 0, 0.226);
+  }
+  /* Estilos para el scroll horizontal */
+  .d-flex::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .d-flex::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  .d-flex::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+  
+  .d-flex::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+  
+  .card {
+    background-color: rgba(0, 0, 0, 0) !important;
+  }
+  .user-controls {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .watch-now-button {
+    padding: 8px 16px;
+    background-color: #e50914;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .watch-now-button:hover {
+    background-color: #b20710;
+  }
+  

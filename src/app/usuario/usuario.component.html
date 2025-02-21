@@ -1,0 +1,125 @@
+<div class="main-container">
+
+    <button
+      class="btn btn-danger m-4 p-3 shadow-lg"
+      (click)="tmdbAuthService.logout()" 
+    >
+      <i class="bi bi-exclamation-triangle-fill"></i>
+       CERRAR SESION
+    </button>
+
+    <h2 class="text-center mb-4 text-light">Series Favoritas</h2>
+  
+    <div class="d-flex flex-nowrap overflow-auto">
+      <div class="col" *ngFor="let serie of favoriteSeries">
+        <div
+          class="card h-100 bg-dark text-light position-relative border-0"
+          style="min-width: 300px"
+        >
+          <div class="position-relative">
+            <img
+              [src]="serie.posterUrl"
+              class="card-img-top rounded"
+              alt="{{ serie.title }}"
+              loading="lazy"
+            />
+            <span
+              class="badge bg-primary position-absolute bottom-0 end-0 m-2 px-3 py-1"
+            >
+              {{ serie.releaseDate }}
+            </span>
+          </div>
+          <div class="card-body p-2 text-center">
+            <div class="card-body-2">
+              <h5 class="card-title fw-bold m-0 text-start">{{ serie.title }}</h5>
+              <button
+                class="watch-now-button"
+                (click)="tmdbService.goToWatch(serie.id, 'series')"
+              >
+                Ver Ahora
+              </button>
+            </div>
+            <div class="m-0 text-end">
+              <div class="user-controls d-flex gap-3 align-items-center">
+                <i
+                  class="bi bi-clock"
+                  [ngClass]="{
+                    'text-primary': isInWatchlist(serie.id),
+                    'text-secondary': !isInWatchlist(serie.id)
+                  }"
+                  (click)="toggleWatchList(serie.id, isInWatchlist(serie.id))"
+                ></i>
+                <i
+                  class="bi bi-heart"
+                  [ngClass]="{
+                    'bi-heart-fill text-danger': isFavorite(serie.id),
+                    'bi-heart text-secondary': !isFavorite(serie.id)
+                  }"
+                  (click)="toggleFavorite(serie.id, isFavorite(serie.id))"
+                ></i>
+              </div>
+              <ngb-rating [(rate)]="serie.stars"></ngb-rating>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <h2 class="text-center mb-4 text-light">Series Guardadas</h2>
+    <div class="d-flex flex-nowrap overflow-auto">
+      <div class="col" *ngFor="let serie of watchlistSeries">
+        <div
+          class="card h-100 bg-dark text-light position-relative border-0"
+          style="min-width: 300px"
+        >
+          <div class="position-relative">
+            <img
+              [src]="serie.posterUrl"
+              class="card-img-top rounded"
+              alt="{{ serie.title }}"
+              loading="lazy"
+            />
+            <span
+              class="badge bg-primary position-absolute bottom-0 end-0 m-2 px-3 py-1"
+            >
+              {{ serie.releaseDate }}
+            </span>
+          </div>
+          <div class="card-body p-2 text-center">
+            <div class="card-body-2">
+              <h5 class="card-title fw-bold m-0 text-start">{{ serie.title }}</h5>
+              <button
+                class="watch-now-button"
+                (click)="tmdbService.goToWatch(serie.id, 'series')"
+              >
+                Ver Ahora
+              </button>
+            </div>
+            <div class="m-0 text-end">
+              <div class="user-controls d-flex gap-3 align-items-center">
+                <i
+                  class="bi bi-clock"
+                  [ngClass]="{
+                    'text-primary': isInWatchlist(serie.id),
+                    'text-secondary': !isInWatchlist(serie.id)
+                  }"
+                  (click)="toggleWatchList(serie.id, isInWatchlist(serie.id))"
+                ></i>
+                <i
+                  class="bi bi-heart"
+                  [ngClass]="{
+                    'bi-heart-fill text-danger': isFavorite(serie.id),
+                    'bi-heart text-secondary': !isFavorite(serie.id)
+                  }"
+                  (click)="toggleFavorite(serie.id, isFavorite(serie.id))"
+                ></i>
+              </div>
+              <ngb-rating [(rate)]="serie.stars"></ngb-rating>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    
+  </div>
+  

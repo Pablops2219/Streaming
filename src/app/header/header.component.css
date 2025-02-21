@@ -124,6 +124,7 @@ body {
 }
 
 .user-profile{
+  cursor: pointer;
   flex-flow:column;
   justify-content: center;
   align-items: center;

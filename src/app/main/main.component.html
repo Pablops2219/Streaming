@@ -146,7 +146,7 @@
                   'text-secondary': !isInWatchlist(serie.id, 'tv')
                 }"
                 (click)="
-                  toggleWatchList(serie.id, 'tv', isInWatchlist(serie.id, 'tv'))
+                  toggleWatchList(serie.id, 'series', isInWatchlist(serie.id, 'tv'))
                 "
               >
               </i>
@@ -157,7 +157,7 @@
                   'bi-heart text-secondary': !isFavorite(serie.id, 'tv')
                 }"
                 (click)="
-                  toggleFavorite(serie.id, 'tv', isFavorite(serie.id, 'tv'))
+                  toggleFavorite(serie.id, 'series', isFavorite(serie.id, 'tv'))
                 "
               >
               </i>

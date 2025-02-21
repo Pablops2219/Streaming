@@ -28,7 +28,9 @@ export class TmdbAuthService {
   authenticateUser(): void {
     this.createRequestToken().subscribe((response: any) => {
       const requestToken = response.request_token;
-      const redirectUrl = encodeURIComponent(window.location.origin + '/auth-callback');
+      const redirectUrl = encodeURIComponent(
+        window.location.origin + '/auth-callback'
+      );
       window.location.href = `https://www.themoviedb.org/authenticate/${requestToken}?redirect_to=${redirectUrl}`;
     });
   }
@@ -41,49 +43,76 @@ export class TmdbAuthService {
     });
   }
 
-
-  
-  markAsFavorite(mediaId: number, mediaType: 'movie' | 'tv', favorite: boolean): Observable<any> {
+  markAsFavorite(
+    mediaId: number,
+    mediaType: 'movie' | 'tv',
+    favorite: boolean
+  ): Observable<any> {
     const sessionId = localStorage.getItem('tmdb_session_id');
-    const accountId = '21826037'; // Puedes obtenerlo dinámicamente con otra API si es necesario
+    const accountId = this.http.get(
+      `https://api.themoviedb.org/3/account?api_key=${this.apiKey}&session_id=${sessionId}`
+    );
     const url = `https://api.themoviedb.org/3/account/${accountId}/favorite?api_key=${this.apiKey}&session_id=${sessionId}`;
-  
+
     const body = {
       media_type: mediaType,
       media_id: mediaId,
       favorite: favorite,
     };
-  
+
     return this.http.post(url, body);
   }
-  
+
   getFavoriteMovies(): Observable<any> {
     const sessionId = localStorage.getItem('tmdb_session_id');
-    const accountId = '21826037';
-    return this.http.get(`https://api.themoviedb.org/3/account/${accountId}/favorite/movies?api_key=${this.apiKey}&session_id=${sessionId}`);
+    const accountId = this.http.get(
+      `https://api.themoviedb.org/3/account?api_key=${this.apiKey}&session_id=${sessionId}`
+    );
+    return this.http.get(
+      `https://api.themoviedb.org/3/account/${accountId}/favorite/movies?api_key=${this.apiKey}&session_id=${sessionId}`
+    );
   }
-  
+
   getFavoriteTVShows(): Observable<any> {
     const sessionId = localStorage.getItem('tmdb_session_id');
-    const accountId = '21826037';
-    return this.http.get(`https://api.themoviedb.org/3/account/${accountId}/favorite/tv?api_key=${this.apiKey}&session_id=${sessionId}`);
+    const accountId = this.http.get(
+      `https://api.themoviedb.org/3/account?api_key=${this.apiKey}&session_id=${sessionId}`
+    );
+    return this.http.get(
+      `https://api.themoviedb.org/3/account/${accountId}/favorite/tv?api_key=${this.apiKey}&session_id=${sessionId}`
+    );
   }
-  
+
   getWatchlistMovies(): Observable<any> {
     const sessionId = localStorage.getItem('tmdb_session_id');
-    const accountId = '21826037';
-    return this.http.get(`https://api.themoviedb.org/3/account/${accountId}/watchlist/movies?api_key=${this.apiKey}&session_id=${sessionId}`);
+    const accountId = this.http.get(
+      `https://api.themoviedb.org/3/account?api_key=${this.apiKey}&session_id=${sessionId}`
+    );
+    return this.http.get(
+      `https://api.themoviedb.org/3/account/${accountId}/watchlist/movies?api_key=${this.apiKey}&session_id=${sessionId}`
+    );
   }
-  
+
   getWatchlistTVShows(): Observable<any> {
     const sessionId = localStorage.getItem('tmdb_session_id');
-    const accountId = '21826037';
-    return this.http.get(`https://api.themoviedb.org/3/account/${accountId}/watchlist/tv?api_key=${this.apiKey}&session_id=${sessionId}`);
+    const accountId = this.http.get(
+      `https://api.themoviedb.org/3/account?api_key=${this.apiKey}&session_id=${sessionId}`
+    );
+    return this.http.get(
+      `https://api.themoviedb.org/3/account/${accountId}/watchlist/tv?api_key=${this.apiKey}&session_id=${sessionId}`
+    );
   }
-  
-  markAs(mediaId: number, mediaType: 'movie' | 'series', mark: boolean, action: 'favorite' | 'watchlist'): Observable<any> {
+
+  markAs(
+    mediaId: number,
+    mediaType: 'movie' | 'series',
+    mark: boolean,
+    action: 'favorite' | 'watchlist'
+  ): Observable<any> {
     const sessionId = localStorage.getItem('tmdb_session_id');
-    const accountId = '21826037';
+    const accountId = this.http.get(
+      `https://api.themoviedb.org/3/account?api_key=${this.apiKey}&session_id=${sessionId}`
+    );
 
     // Cambiar 'series' a 'tv' en la URL
     const adjustedMediaType = mediaType === 'series' ? 'tv' : 'movie';
@@ -91,14 +120,18 @@ export class TmdbAuthService {
     const body = {
       media_type: adjustedMediaType,
       media_id: mediaId,
-      [action]: mark
+      [action]: mark,
     };
 
     return this.http.post(
       `https://api.themoviedb.org/3/account/${accountId}/${action}?api_key=${this.apiKey}&session_id=${sessionId}`,
       body
     );
-}
+  }
 
-  
+  logout() {
+    localStorage.removeItem('tmdb_session_id'); // Elimina cualquier token o datos de sesión
+    this.router.navigate(['/main']);
+    console.log('Sesión cerrada');
+  }
 }

@@ -30,7 +30,7 @@
             <!-- Opciones de usuario -->
             <div class="netflix-user d-flex align-items-center">
                 <button *ngIf="!isAuthenticated" class="user-button" (click)="loginWithTMDB()">INICIAR SESIÓN</button>
-                <div *ngIf="isAuthenticated" class="user-profile d-flex">
+                <div *ngIf="isAuthenticated" [routerLink]="['usuario']" class="user-profile d-flex">
                     <i class="bi bi-person-circle"></i>
                     <span>Invitado</span>
                 </div>
