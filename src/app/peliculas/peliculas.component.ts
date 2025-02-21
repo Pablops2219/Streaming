@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
 import { NgbRating, NgbRatingConfig } from '@ng-bootstrap/ng-bootstrap';
 import { TheMovieDBService } from '../services/the-movie-db.service';
 import { TmdbAuthService } from '../services/tmdb-auth.service';
 
 @Component({
   selector: 'app-peliculas',
-  imports: [NgbRating, CommonModule],
+  imports: [ RouterModule, NgbRating, CommonModule],
   templateUrl: './peliculas.component.html',
   styleUrl: './peliculas.component.css',
 })
@@ -22,7 +22,8 @@ export class PeliculasComponent {
   favoriteMovies: Set<number> = new Set();
 
   constructor(
-    private tmdbService: TheMovieDBService,
+      private router: Router,
+    public tmdbService: TheMovieDBService,
     config: NgbRatingConfig,
     private sanitizer: DomSanitizer,
     public tmdbAuthService: TmdbAuthService,
@@ -57,6 +58,7 @@ export class PeliculasComponent {
     });
   }
 
+  
   cargarPeliculas() {
     console.log(`Cargando películas ordenadas por: ${this.orden}`);
     this.loadTrendingMovies(this.currentPage);

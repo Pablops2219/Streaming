@@ -1,6 +1,6 @@
 import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import {
   CarouselComponent,
   CarouselControlComponent,
@@ -17,10 +17,7 @@ import {
 
 @Component({
   selector: 'app-movieslides',
-  imports: [
-    NgFor,
-    NgbCarouselModule
-],
+  imports: [ RouterModule, NgFor, NgbCarouselModule],
   templateUrl: './movieslides.component.html',
   styleUrl: './movieslides.component.css',
 })
@@ -42,13 +39,15 @@ export class MovieslidesComponent {
   // videoAvailable: Indica si hay un video disponible (true/false)
 
   movie: any;
+  
 
   constructor(
-    private tmdbService: TheMovieDBService,
+    private router: Router,
+    public tmdbService: TheMovieDBService,
     config: NgbCarouselConfig
   ) {
-		config.interval = 7000;
-		config.wrap = false;
+    config.interval = 7000;
+    config.wrap = false;
     config.showNavigationArrows = false;
     config.showNavigationIndicators = false;
   }
@@ -59,11 +58,10 @@ export class MovieslidesComponent {
       error: (err) => console.error('Error en la petición:', err),
     });
 
-
     this.tmdbService.getTrendingMovies('day').subscribe({
       next: (data) => {
         //console.log('Películas recomendadas:', data);
-    
+
         // Filtrar las películas usando el servicio
         this.tmdbService.filterMoviesByMissingData('both', data).subscribe({
           next: (filteredData) => {
@@ -75,8 +73,6 @@ export class MovieslidesComponent {
       },
       error: (err) => console.error('Error al obtener las películas:', err),
     });
-
-    
   }
 
   // Manejar el cambio de slide
@@ -84,4 +80,5 @@ export class MovieslidesComponent {
     console.log('Slide cambiado:', event);
     // Aquí puedes agregar lógica adicional si es necesario
   }
+
 }

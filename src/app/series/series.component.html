@@ -12,7 +12,7 @@
           <div class="card-body p-2 text-center">
             <div class="card-body-2">
               <h5 class="card-title fw-bold m-0 text-start">{{ serie.title }}</h5>
-              <button class="watch-now-button">Ver Ahora</button>
+              <button class="watch-now-button" (click)="tmdbService.goToWatch(serie.id,'series')">Ver Ahora</button>
             </div>
             <div class="m-0 text-end">
               <div class="user-controls d-flex gap-3 align-items-center">

@@ -1,0 +1,74 @@
+<!-- <iframe width="100%" height="100%" frameBorder="0" [src]="urlSafe"></iframe> -->
+<div class="main-container">
+  <h2 class="text-center mb-4 text-light">{{ selectedMovie.title }}</h2>
+  <div class="d-flex flex-nowrap">
+    <div class="col">
+      <div
+        class="card h-100 bg-dark text-light position-relative border-0"
+        [style.width]="selectedMovie === content ? '50rem' : '18rem'"
+        [ngClass]="{ 'no-hover': showVideo && selectedMovie === content }"
+      >
+        <div class="position-relative">
+          <img
+            *ngIf="!showVideo || selectedMovie !== content"
+            [src]="selectedMovie.posterUrl"
+            class="card-img-top rounded"
+            alt="{{ selectedMovie.title }}"
+            loading="lazy"
+            (click)="viewDetails(selectedMovie)"
+          />
+          <span
+            class="badge bg-primary position-absolute bottom-0 end-0 m-2 px-3 py-1"
+            *ngIf="!showVideo || selectedMovie !== content"
+          >
+            {{ selectedMovie.releaseDate }}
+          </span>
+        </div>
+        <div class="card-body p-2 text-center">
+          <div class="card-body-2">
+            <h5 class="card-title fw-bold m-0 text-start">
+              {{ selectedMovie.title }}
+            </h5>
+          </div>
+          <div class="m-0 text-end">
+            <div class="user-controls d-flex gap-3 align-items-center">
+              <i
+                class="bi bi-clock"
+                [ngClass]="{
+                  'text-primary': isInWatchlist(selectedMovie.id),
+                  'text-secondary': !isInWatchlist(selectedMovie.id)
+                }"
+                (click)="toggleWatchList(selectedMovie.id)"
+              >
+              </i>
+              <i
+                class="bi bi-heart"
+                [ngClass]="{
+                  'bi-heart-fill text-danger': isFavorite(selectedMovie.id),
+                  'bi-heart text-secondary': !isFavorite(selectedMovie.id)
+                }"
+                (click)="toggleFavorite(selectedMovie.id)"
+              >
+              </i>
+            </div>
+            <ngb-rating [(rate)]="selectedMovie.stars"></ngb-rating>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <iframe
+        width="100%"
+        height="315"
+        [src]="safeVideoUrl"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        class="card-img-top rounded"
+      ></iframe>
+      <div>
+        {{ selectedMovie.overview }}
+      </div>
+    </div>
+  </div>
+</div>

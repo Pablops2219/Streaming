@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
 
 // Interfaces para modelar las respuestas de la API
@@ -20,6 +21,25 @@ export interface Movie {
   videoAvailable: boolean; // Indica si hay un video disponible
 }
 
+export interface Series {
+  id: number;
+  title: string;
+  overview: string;
+  posterUrl: string;
+  backdropUrl: string;
+  releaseDate: string;
+  voteAverage: number;
+  voteCount: number;
+  popularity: number;
+  genreIds: number[];
+  originalLanguage: string;
+  originalName: string;
+  inProduction: boolean;
+  numberOfSeasons: number;
+  numberOfEpisodes: number;
+  networks: { id: number; name: string; logoPath: string }[];
+}
+
 export interface ApiResponse {
   page: number; // Número de página
   results: Movie[]; // Lista de películas
@@ -37,7 +57,7 @@ export class TheMovieDBService {
   private readonly BEARER_TOKEN =
     'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2ZTg3YzNjMDdiMDAwMzQyYTUwZDI0ZTg1MjI2MjQ3ZCIsIm5iZiI6MTczOTg3MDMyOS4xMTYsInN1YiI6IjY3YjQ1MDc5ZDQ0ZGNhZmUwZjlmOWViMCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Kzim2VPPXQpwuREhPmce0XBbKqI9Jn-oSloXA5_e1_A'; // Token de autenticación
 
-  constructor(private http: HttpClient) {}
+  constructor(private router: Router, private http: HttpClient) {}
 
   /**
    * Realiza una solicitud GET con autenticación por token Bearer.
@@ -71,7 +91,49 @@ export class TheMovieDBService {
    * @returns Observable con los detalles de la película
    */
   getMovieByID(movieId: number): Observable<Movie> {
-    return this.get<Movie>(`movie/${movieId}`);
+    return this.get<Movie>(`movie/${movieId}?language=es`).pipe(
+      map((movie: any) => ({
+        id: movie.id,
+        title: movie.title,
+        overview: movie.overview,
+        posterUrl: `https://image.tmdb.org/t/p/original${movie.poster_path}`,
+        backdropUrl: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
+        releaseDate: movie.release_date,
+        voteAverage: movie.vote_average,
+        stars: Math.round(movie.vote_average / 2),
+        voteCount: movie.vote_count,
+        popularity: movie.popularity,
+        genreIds: movie.genre_ids,
+        originalLanguage: movie.original_language,
+        originalTitle: movie.original_title,
+        adultContent: movie.adult,
+        videoAvailable: movie.video,
+      }))
+    );
+  }
+
+  getSeriesByID(seriesId: number): Observable<Series> {
+    return this.get<Series>(`tv/${seriesId}?language=es`).pipe(
+      map((series: any) => ({
+        id: series.id,
+        title: series.name,
+        overview: series.overview,
+        posterUrl: `https://image.tmdb.org/t/p/original${series.poster_path}`,
+        backdropUrl: `https://image.tmdb.org/t/p/original${series.backdrop_path}`,
+        releaseDate: series.first_air_date,
+        voteAverage: series.vote_average,
+        stars: Math.round(series.vote_average / 2),
+        voteCount: series.vote_count,
+        popularity: series.popularity,
+        genreIds: series.genre_ids,
+        originalLanguage: series.original_language,
+        originalName: series.original_name,
+        inProduction: series.in_production,
+        numberOfSeasons: series.number_of_seasons,
+        numberOfEpisodes: series.number_of_episodes,
+        networks: series.networks,
+      }))
+    );
   }
 
   /**
@@ -79,8 +141,13 @@ export class TheMovieDBService {
    * @returns Observable con la lista de películas descubiertas
    */
   //https://api.themoviedb.org/3
-  getTrendingMovies(type: 'day' | 'week', page: number = 1): Observable<Movie[]> {
-    return this.get<ApiResponse>(`/trending/movie/${type}?language=es-ES&page=${page}`).pipe(
+  getTrendingMovies(
+    type: 'day' | 'week',
+    page: number = 1
+  ): Observable<Movie[]> {
+    return this.get<ApiResponse>(
+      `/trending/movie/${type}?language=es-ES&page=${page}`
+    ).pipe(
       map((response: ApiResponse) => {
         return response.results.map((movie: any) => ({
           id: movie.id,
@@ -101,8 +168,7 @@ export class TheMovieDBService {
         }));
       })
     );
-}
-
+  }
 
   /**
    * Filtra películas por datos faltantes.
@@ -140,8 +206,13 @@ export class TheMovieDBService {
     });
   }
 
-  getTrendingSeries(type: 'day' | 'week', page: number = 1): Observable<Movie[]> {
-    return this.get<ApiResponse>(`/trending/tv/${type}?language=es-ES&page=${page}`).pipe(
+  getTrendingSeries(
+    type: 'day' | 'week',
+    page: number = 1
+  ): Observable<Movie[]> {
+    return this.get<ApiResponse>(
+      `/trending/tv/${type}?language=es-ES&page=${page}`
+    ).pipe(
       map((response: ApiResponse) => {
         return response.results.map((series: any) => ({
           id: series.id,
@@ -245,5 +316,9 @@ export class TheMovieDBService {
         { name: 'Video no encontrado', url: 'https://www.youtube.com/404' },
       ],
     ]);
+  }
+
+  goToWatch(id: number, type: 'movie' | 'series'): void {
+    this.router.navigate(['/watch-now', type, id]);
   }
 }

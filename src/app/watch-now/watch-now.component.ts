@@ -1,3 +1,4 @@
+
 import { Component } from '@angular/core';
 import { TheMovieDBService } from '../services/the-movie-db.service';
 import { NgClass, NgFor, NgIf } from '@angular/common';
@@ -5,23 +6,25 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NgbRatingConfig, NgbRatingModule } from '@ng-bootstrap/ng-bootstrap';
 import { TmdbAuthService } from '../services/tmdb-auth.service';
 import { MovieslidesComponent } from "../movieslides/movieslides.component";
-import { Router, RouterLink, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-main',
-  imports: [NgFor, NgbRatingModule, NgIf, NgClass, MovieslidesComponent, RouterModule],
-  templateUrl: './main.component.html',
-  styleUrl: './main.component.css',
+  selector: 'app-watch-now',
+  imports: [NgbRatingModule, NgIf, NgClass, RouterModule],
+  templateUrl: './watch-now.component.html',
+  styleUrl: './watch-now.component.css',
   providers: [NgbRatingConfig],
 })
-export class MainComponent {
-  movies: any[] = [];
-  series: any[] = [];
+export class WatchNowComponent {
+  content:any = [];
   selectedMovie: any = null;
   showVideo: boolean = false;
   safeVideoUrl: SafeResourceUrl | null = null;
   urlSafe: SafeResourceUrl | undefined;
   isMovieSelected: boolean = false;
+
+  // Cambia 'tv' por 'series' aquí
+  contentType: 'movie' | 'series' = 'movie'; // Cambia el tipo a 'series'
 
   watchlistMovies: Set<number> = new Set();
   watchlistSeries: Set<number> = new Set();
@@ -30,6 +33,7 @@ export class MainComponent {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     public tmdbService: TheMovieDBService,
     config: NgbRatingConfig,
     private sanitizer: DomSanitizer,
@@ -40,60 +44,79 @@ export class MainComponent {
   }
 
   ngOnInit(): void {
-    this.loadTrendingMovies();
-    this.loadTrendingSeries();
-    this.loadSpecificMovie(762509);
+
+    
+    this.route.paramMap.subscribe(params => {
+      const type = params.get('type'); // Obtiene 'movie' o 'series' de la URL
+      this.contentType = type === 'movie' ? 'movie' : 'series'; // Establece el tipo de contenido
+  
+      const id = params.get('id'); // Obtiene el ID de la película o serie de la URL
+      if (id) {
+        if (this.contentType === 'movie') {
+          this.loadSpecificMovie(+id); // Carga la película específica
+          this.loadMovieVideo(+id); 
+        } else {
+          this.loadSpecificSeries(+id); // Carga la serie específica
+          this.loadSerieVideo(+id); 
+        }
+      }
+    });
+  
+
     
     if (localStorage.getItem('tmdb_session_id')) {
       this.loadUserData();
     }
-  }
 
-  isInWatchlist(mediaId: number, mediaType: 'movie' | 'tv'): boolean {
-    return mediaType === 'movie' ? this.watchlistMovies.has(mediaId) : this.watchlistSeries.has(mediaId);
   }
   
-  isFavorite(mediaId: number, mediaType: 'movie' | 'tv'): boolean {
-    return mediaType === 'movie' ? this.favoriteMovies.has(mediaId) : this.favoriteSeries.has(mediaId);
-  }
   
-
-  private loadTrendingMovies(): void {
-    this.tmdbService.getTrendingMovies('week').subscribe({
+  
+  private loadSpecificSeries(id: number): void {
+    this.tmdbService.getSeriesByID(id).subscribe({
       next: (data) => {
-        this.tmdbService.filterMoviesByMissingData('title', data).subscribe({
-          next: (filteredData) => this.movies = filteredData,
-          error: (err) => console.error('Error al filtrar películas:', err),
-        });
+        this.selectedMovie = data; // Reutiliza selectedMovie para almacenar tanto películas como series
+        console.log('Serie cargada:', this.selectedMovie);
       },
-      error: (err) => console.error('Error al obtener películas:', err),
+      error: (err) => console.error('Error al obtener serie:', err),
     });
   }
-
-  private loadTrendingSeries(): void {
-    this.tmdbService.getTrendingSeries('week').subscribe({
-      next: (data) => this.series = data,
-      error: (err) => console.error('Error al obtener series:', err),
-    });
-  }
-
+   
   private loadSpecificMovie(id: number): void {
     this.tmdbService.getMovieByID(id).subscribe({
-      next: (data) => this.selectedMovie = data,
-      error: (err) => console.error('Error al obtener película:', err),
+      next: (data) =>{
+        this.selectedMovie = data;
+        console.log('Serie cargada:', this.selectedMovie);
+      },
+      error: (err) => console.error('Error al obtener película:', err)
     });
   }
 
-  viewDetails(item: any, isMovie: boolean): void {
+  isInWatchlist(mediaId: number): boolean {
+    return this.contentType === 'movie' ? this.watchlistMovies.has(mediaId) : this.watchlistSeries.has(mediaId);
+  }
+  
+  isFavorite(mediaId: number): boolean {
+    return this.contentType === 'movie' ? this.favoriteMovies.has(mediaId) : this.favoriteSeries.has(mediaId);
+  }
+ 
+  viewDetails(item: any): void {
+    // Verifica si el item seleccionado es el mismo que el actual
     if (this.selectedMovie === item) {
-      this.clearSelection();
+      this.clearSelection(); // Si es el mismo, limpia la selección
     } else {
-      this.selectedMovie = item;
-      this.showVideo = true;+
-      console.log("Item:", item);
-      isMovie ? this.loadMovieVideo(item.id) : this.loadSerieVideo(item.id);
+      this.selectedMovie = item; // Selecciona el nuevo item
+      this.showVideo = true; // Muestra el video
+      //console.log("Item:", item);
+      // Verifica el tipo de contenido y carga el video correspondiente
+      if (this.contentType === 'movie') {
+        this.loadMovieVideo(item.id); // Carga video de la película
+      } else {
+        this.loadSerieVideo(item.id); // Carga video de la serie
+      }
     }
   }
+  
 
   public clearSelection(): void {
     this.selectedMovie = null;
@@ -128,22 +151,34 @@ export class MainComponent {
 
   public sessionId: any;
 
-  toggleWatchList(mediaId: number, mediaType: 'movie' | 'series', isInWatchlist: boolean) {
-    this.tmdbAuthService.markAs(mediaId, mediaType, !isInWatchlist, 'watchlist').subscribe(response => {
+  toggleWatchList(mediaId: number) {
+    const isInWatchlist = this.isInWatchlist(mediaId);
+    this.tmdbAuthService.markAs(mediaId, this.contentType, !isInWatchlist, 'watchlist').subscribe(response => {
       if ([1, 12, 13].includes(response.status_code)) {
         console.log('Watchlist actualizado:', !isInWatchlist);
-        mediaType === 'movie' ? this.watchlistMovies.has(mediaId) ? this.watchlistMovies.delete(mediaId) : this.watchlistMovies.add(mediaId)
-                              : this.watchlistSeries.has(mediaId) ? this.watchlistSeries.delete(mediaId) : this.watchlistSeries.add(mediaId);
+        this.contentType === 'movie' 
+          ? this.watchlistMovies.has(mediaId) 
+            ? this.watchlistMovies.delete(mediaId) 
+            : this.watchlistMovies.add(mediaId)
+          : this.watchlistSeries.has(mediaId) 
+            ? this.watchlistSeries.delete(mediaId) 
+            : this.watchlistSeries.add(mediaId);
       }
     });
   }
-
-  toggleFavorite(mediaId: number, mediaType: 'movie' | 'series', isFavorite: boolean) {
-    this.tmdbAuthService.markAs(mediaId, mediaType, !isFavorite, 'favorite').subscribe(response => {
+  
+  toggleFavorite(mediaId: number) {
+    const isFavorite = this.isFavorite(mediaId);
+    this.tmdbAuthService.markAs(mediaId, this.contentType, !isFavorite, 'favorite').subscribe(response => {
       if ([1, 12, 13].includes(response.status_code)) {
         console.log('Favorito actualizado:', !isFavorite);
-        mediaType === 'movie' ? this.favoriteMovies.has(mediaId) ? this.favoriteMovies.delete(mediaId) : this.favoriteMovies.add(mediaId)
-                              : this.favoriteSeries.has(mediaId) ? this.favoriteSeries.delete(mediaId) : this.favoriteSeries.add(mediaId);
+        this.contentType === 'movie' 
+          ? this.favoriteMovies.has(mediaId) 
+            ? this.favoriteMovies.delete(mediaId) 
+            : this.favoriteMovies.add(mediaId)
+          : this.favoriteSeries.has(mediaId) 
+            ? this.favoriteSeries.delete(mediaId) 
+            : this.favoriteSeries.add(mediaId);
       }
     });
   }

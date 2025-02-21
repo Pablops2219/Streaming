@@ -81,20 +81,24 @@ export class TmdbAuthService {
     return this.http.get(`https://api.themoviedb.org/3/account/${accountId}/watchlist/tv?api_key=${this.apiKey}&session_id=${sessionId}`);
   }
   
-  markAs(mediaId: number, mediaType: 'movie' | 'tv', mark: boolean, action: 'favorite' | 'watchlist'): Observable<any> {
+  markAs(mediaId: number, mediaType: 'movie' | 'series', mark: boolean, action: 'favorite' | 'watchlist'): Observable<any> {
     const sessionId = localStorage.getItem('tmdb_session_id');
     const accountId = '21826037';
-  
+
+    // Cambiar 'series' a 'tv' en la URL
+    const adjustedMediaType = mediaType === 'series' ? 'tv' : 'movie';
+
     const body = {
-      media_type: mediaType,
+      media_type: adjustedMediaType,
       media_id: mediaId,
       [action]: mark
     };
-  
+
     return this.http.post(
       `https://api.themoviedb.org/3/account/${accountId}/${action}?api_key=${this.apiKey}&session_id=${sessionId}`,
       body
     );
-  }
+}
+
   
 }

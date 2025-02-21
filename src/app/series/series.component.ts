@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
 import { NgbRating, NgbRatingConfig } from '@ng-bootstrap/ng-bootstrap';
 import { TheMovieDBService } from '../services/the-movie-db.service';
 import { TmdbAuthService } from '../services/tmdb-auth.service';
 
 @Component({
   selector: 'app-series',
-  imports: [NgbRating, CommonModule],
+  imports: [NgbRating, CommonModule, RouterModule],
   templateUrl: './series.component.html', // Cambia el nombre del archivo de plantilla
   styleUrls: ['./series.component.css'], // Cambia el nombre del archivo de estilos
 })
@@ -21,7 +21,8 @@ export class SeriesComponent {
   favoriteSeries: Set<number> = new Set(); // Cambia favoriteMovies a favoriteSeries
 
   constructor(
-    private tmdbService: TheMovieDBService,
+    private router: Router,
+    public tmdbService: TheMovieDBService,
     config: NgbRatingConfig,
     private sanitizer: DomSanitizer,
     public tmdbAuthService: TmdbAuthService,
@@ -100,27 +101,45 @@ export class SeriesComponent {
 
   toggleWatchList(mediaId: number, isInWatchlist: boolean) {
     this.tmdbAuthService
-      .markAs(mediaId, 'tv', !isInWatchlist, 'watchlist') // Cambia 'movie' a 'tv'
+      .markAs(mediaId, 'series', !isInWatchlist, 'watchlist')
       .subscribe((response) => {
+        console.log('Respuesta de la API para Watchlist:', response);
         if ([1, 12, 13].includes(response.status_code)) {
           console.log('Watchlist actualizado:', !isInWatchlist);
-          this.watchlistSeries.has(mediaId)
-            ? this.watchlistSeries.delete(mediaId)
-            : this.watchlistSeries.add(mediaId);
+          if (this.watchlistSeries.has(mediaId)) {
+            this.watchlistSeries.delete(mediaId);
+            console.log(`Serie ${mediaId} eliminada de la Watchlist.`);
+          } else {
+            this.watchlistSeries.add(mediaId);
+            console.log(`Serie ${mediaId} añadida a la Watchlist.`);
+          }
+        } else {
+          console.warn('Error en la respuesta de la API:', response);
         }
       });
   }
-
+  
   toggleFavorite(mediaId: number, isFavorite: boolean) {
     this.tmdbAuthService
-      .markAs(mediaId, 'tv', !isFavorite, 'favorite') // Cambia 'movie' a 'tv'
+      .markAs(mediaId, 'series', !isFavorite, 'favorite')
       .subscribe((response) => {
+        console.log('Respuesta de la API para Favoritos:', response);
         if ([1, 12, 13].includes(response.status_code)) {
           console.log('Favorito actualizado:', !isFavorite);
-          this.favoriteSeries.has(mediaId)
-            ? this.favoriteSeries.delete(mediaId)
-            : this.favoriteSeries.add(mediaId);
+          if (this.favoriteSeries.has(mediaId)) {
+            this.favoriteSeries.delete(mediaId);
+            console.log(`Serie ${mediaId} eliminada de Favoritos.`);
+          } else {
+            this.favoriteSeries.add(mediaId);
+            console.log(`Serie ${mediaId} añadida a Favoritos.`);
+          }
+        } else {
+          console.warn('Error en la respuesta de la API:', response);
         }
       });
   }
+  
+  
 }
+
+

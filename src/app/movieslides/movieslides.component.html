@@ -9,7 +9,7 @@
         <p><strong>Nota media:</strong> {{ movie.voteAverage }}</p>
         <p><strong>Fecha de Publicación:</strong> {{ movie.releaseDate }}</p>
         <p class="synopsis">{{ movie.overview }}</p>
-        <button class="watch-now-button">Ver Ahora</button>
+        <button class="watch-now-button" (click)="tmdbService.goToWatch(movie.id,'movie')">Ver Ahora</button>
       </div>
     </div>
   </ng-template>
