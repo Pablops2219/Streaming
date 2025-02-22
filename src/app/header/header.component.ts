@@ -14,7 +14,7 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 })
 export class HeaderComponent {
 
-  isAuthenticated: boolean = !!localStorage.getItem('tmdb_session_id');
+  public isAuthenticated: boolean = false;
 
 
   constructor(
@@ -22,7 +22,24 @@ export class HeaderComponent {
     private route: ActivatedRoute
   ) { }
 
+  private intervalId: any;
+  count = 1;
+
+
+  ngOnDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId); // Evita fugas de memoria
+    }
+  }
+
   ngOnInit() {
+
+    this.intervalId = setInterval(() => {
+      console.log(`Valor: ${this.isAuthenticated}`);
+      this.count++;
+      localStorage.getItem('tmdb_session_id')!==null?this.isAuthenticated=true:this.isAuthenticated=false;
+    }, 1000);
+
     this.route.queryParams.subscribe(params => {
       if (params['request_token']) {
         this.tmdbAuthService.handleAuthCallback(params['request_token'])
@@ -31,12 +48,10 @@ export class HeaderComponent {
       }
     });
 
-    const sessionId = localStorage.getItem('tmdb_session_id');
-    if (sessionId) {
-      
-      this.isAuthenticated = true;
-    }
+  }
 
+  logout() {
+    this.isAuthenticated = false;
   }
 
   loginWithTMDB() {

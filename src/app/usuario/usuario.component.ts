@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './usuario.component.css',
 })
 export class UsuarioComponent {
+  
   favoriteMovies: any[] = [];
   favoriteSeries: any[] = [];
   watchlistMovies: any[] = [];
@@ -28,6 +29,7 @@ export class UsuarioComponent {
     config.max = 5;
     config.readonly = true;
   }
+
 
   ngOnInit(): void {
     this.loadUserFavorites();
@@ -82,30 +84,39 @@ export class UsuarioComponent {
       });
   }
 
-  
-  
   toggleWatchlistMovie(mediaId: number, isInWatchlist: boolean) {
-    this.tmdbAuthService.markAs(mediaId, 'movie', !isInWatchlist, 'watchlist').subscribe((response) => {
-      if ([1, 12, 13].includes(response.status_code)) {
-        if (this.isInWatchlist(mediaId)) {
-          this.watchlistMovies = this.watchlistMovies.filter((movie) => movie.id !== mediaId);
-        } else {
-          this.watchlistMovies.push({ id: mediaId, title: 'Título Temporal' });
+    this.tmdbAuthService
+      .markAs(mediaId, 'movie', !isInWatchlist, 'watchlist')
+      .subscribe((response) => {
+        if ([1, 12, 13].includes(response.status_code)) {
+          if (this.isInWatchlist(mediaId)) {
+            this.watchlistMovies = this.watchlistMovies.filter(
+              (movie) => movie.id !== mediaId
+            );
+          } else {
+            this.watchlistMovies.push({
+              id: mediaId,
+              title: 'Título Temporal',
+            });
+          }
         }
-      }
-    });
+      });
   }
 
   toggleFavoriteMovie(mediaId: number, isFavorite: boolean) {
-    this.tmdbAuthService.markAs(mediaId, 'movie', !isFavorite, 'favorite').subscribe((response) => {
-      if ([1, 12, 13].includes(response.status_code)) {
-        if (this.isFavorite(mediaId)) {
-          this.favoriteMovies = this.favoriteMovies.filter((movie) => movie.id !== mediaId);
-        } else {
-          this.favoriteMovies.push({ id: mediaId, title: 'Título Temporal' });
+    this.tmdbAuthService
+      .markAs(mediaId, 'movie', !isFavorite, 'favorite')
+      .subscribe((response) => {
+        if ([1, 12, 13].includes(response.status_code)) {
+          if (this.isFavorite(mediaId)) {
+            this.favoriteMovies = this.favoriteMovies.filter(
+              (movie) => movie.id !== mediaId
+            );
+          } else {
+            this.favoriteMovies.push({ id: mediaId, title: 'Título Temporal' });
+          }
         }
-      }
-    });
+      });
   }
 
   loadUserFavorites() {
@@ -193,6 +204,5 @@ export class UsuarioComponent {
       }));
     });
   }
-
   
 }
