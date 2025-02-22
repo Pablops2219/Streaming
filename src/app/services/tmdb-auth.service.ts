@@ -12,19 +12,17 @@ export class TmdbAuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  // Paso 1: Crear un request token
   createRequestToken(): Observable<any> {
     return this.http.get(`${this.apiUrl}/token/new?api_key=${this.apiKey}`);
   }
 
-  // Paso 3: Crear una sesión con el request token aprobado
   createSession(requestToken: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/session/new?api_key=${this.apiKey}`, {
       request_token: requestToken,
     });
   }
 
-  // Iniciar el proceso de autenticación
+  // Iniciar el proceso de autenticación 
   authenticateUser(): void {
     this.createRequestToken().subscribe((response: any) => {
       const requestToken = response.request_token;
